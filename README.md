@@ -77,8 +77,8 @@ n8n-docker-setup/
 │   ├── redis/            # Redis data (if queue mode)
 │   └── postgres/         # PostgreSQL data (if enabled)
 ├── backups/              # 🗄️ Backup files
-├── logs/                 # 📊 Application logs  
-└── wiki/                 # 📚 Comprehensive documentation
+└── logs/                 # 📊 Application logs
+# 📚 See GitHub Wiki for comprehensive documentation
 ```
 
 ## 🔧 Configuration
@@ -97,7 +97,7 @@ For high-traffic environments, easily switch to:
 - **Multiple workers**
 - **HTTPS** with reverse proxy
 
-> 📖 **Detailed configuration guide:** [wiki/Configuration.md](wiki/Configuration.md)
+> 📖 **Detailed configuration guide:** [See Wiki - Configuration](../../wiki/Configuration)
 
 ## 🛡️ Security
 
@@ -182,13 +182,15 @@ For high-traffic environments, easily switch to:
 ## 📚 Documentation
 
 ### 📖 Comprehensive Wiki
-- **[🏠 Wiki Home](wiki/Home.md)** - Documentation hub
-- **[🚀 Quick Start](wiki/Quick-Start.md)** - 60-second deployment  
-- **[⚙️ Configuration](wiki/Configuration.md)** - Environment settings
-- **[📋 Command Reference](wiki/Command-Reference.md)** - All commands explained
-- **[❓ FAQ](wiki/FAQ.md)** - Common questions answered
-- **[🔒 Security Guide](wiki/Security.md)** - Hardening & best practices
-- **[🏭 Production Deployment](wiki/Production-Deployment.md)** - Enterprise setup
+**📚 [Visit the Complete Wiki](../../wiki) for detailed documentation:**
+
+- **[🏠 Home](../../wiki/Home)** - Documentation hub and navigation
+- **[🚀 Quick Start](../../wiki/Quick-Start)** - 60-second deployment guide  
+- **[⚙️ Configuration](../../wiki/Configuration)** - Complete environment settings
+- **[📋 Command Reference](../../wiki/Command-Reference)** - All commands with examples
+- **[❓ FAQ](../../wiki/FAQ)** - Frequently asked questions
+- **[🔒 Security Guide](../../wiki/Security)** - Security best practices
+- **[🏭 Production Deployment](../../wiki/Production-Deployment)** - Enterprise setup guide
 
 ### External Resources
 - **[n8n Documentation](https://docs.n8n.io/)** - Official n8n docs
@@ -197,7 +199,7 @@ For high-traffic environments, easily switch to:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](wiki/Contributing.md) for details on:
+Contributions are welcome! Please read our [Contributing Guide](../../wiki/Contributing) for details on:
 - Code standards
 - Testing requirements  
 - Pull request process
