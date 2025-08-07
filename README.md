@@ -1,340 +1,224 @@
-# N8N Docker Setup 🚀
+# n8n Docker Setup 🚀
 
-A production-ready Docker setup for [n8n](https://n8n.io) workflow automation platform with built-in security, backup, and migration features.
+**Production-ready n8n deployment with zero-configuration setup and enterprise-grade security.**
 
-## ✨ Features
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://docs.docker.com/compose/)
+[![n8n](https://img.shields.io/badge/n8n-1.65.1-orange.svg)](https://n8n.io)
+[![Security](https://img.shields.io/badge/Security-Auto--Generated-green.svg)](#security)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- 🔧 **One-command deployment** with secure auto-generated credentials
-- 🛡️ **Security-first approach** with encrypted secrets and proper permissions
-- 📦 **Automatic backups** and easy restore functionality
-- 🔄 **Safe updates** with rollback capability
-- 🗄️ **Database flexibility** (SQLite for development, PostgreSQL for production)
-- 📊 **Health monitoring** and comprehensive logging
-- 🚦 **Environment templates** for development, staging, and production
-- 📋 **Migration-ready** design for easy deployment portability
+> **One command. Zero configuration. Production ready.**
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Docker and Docker Compose installed
-- At least 2GB free disk space
-- Port 5678 available (or configure different port)
-
-### ⚡ Zero-Configuration Deployment
+## ⚡ Quick Start
 
 ```bash
-# Clone this repository
-git clone <repository-url>
-cd n8n-docker-setup
-
-# One command to rule them all!
+git clone https://github.com/rupesh43210/n8nDeploy.git
+cd n8nDeploy
 ./n8n.sh start
-
-# That's it! Access n8n at: http://localhost:5678
-# No login required - create your admin account through n8n's setup wizard
 ```
 
-**What happens automatically:**
-- ✅ `.env` file created with production-ready defaults
-- ✅ Secure credentials auto-generated (encryption keys, passwords)
-- ✅ Docker containers started
-- ✅ n8n running with optimal settings
-- ✅ No manual configuration needed
+**That's it!** Access your n8n instance at [http://localhost:5678](http://localhost:5678)
 
-**First-time setup:**
-- Navigate to http://localhost:5678
-- Create your admin account through n8n's built-in setup wizard
-- No basic authentication required (recommended approach)
+## ✨ What Makes This Special
+
+- **🔧 Zero Configuration** - Runs out of the box with secure defaults
+- **🛡️ Security First** - Auto-generated 32-character encryption keys
+- **📦 Production Ready** - Optimized for real-world deployments  
+- **🔄 One-Command Operations** - Deploy, backup, update, restore
+- **💾 Smart Backups** - Automated daily backups with easy restore
+- **📊 Health Monitoring** - Built-in status checks and logging
+
+## 🚀 Features
+
+### Automatic Setup
+- **Environment Generation**: Creates `.env` with production-ready defaults
+- **Secure Credentials**: Auto-generates encryption keys, passwords, JWT secrets
+- **Docker Orchestration**: Handles container lifecycle and health checks
+- **Permission Management**: Sets proper file permissions automatically
+
+### Security & Compliance
+- **Encrypted Data**: All sensitive data encrypted with auto-generated keys
+- **Secure Defaults**: Basic auth disabled, built-in user management enabled
+- **Git Protection**: Secrets never committed to version control
+- **Audit Tools**: Built-in security validation and checks
+
+### Production Features
+- **Database Options**: SQLite (default) or PostgreSQL for scaling
+- **Queue Support**: Redis integration for high-throughput workflows  
+- **Backup System**: Automated backups with point-in-time restore
+- **Update Management**: Safe updates with automatic rollback capability
 
 ## 📋 Available Commands
 
-The `n8n.sh` script provides all functionality you need:
-
-### 🚀 **Deployment & Management**
-```bash
-./n8n.sh setup              # Initial setup with secure credentials
-./n8n.sh start              # Start n8n services
-./n8n.sh stop               # Stop n8n services
-./n8n.sh restart            # Restart n8n services
-./n8n.sh status             # Check service health and status
-```
-
-### 📊 **Monitoring & Logs**
-```bash
-./n8n.sh logs              # Show all service logs
-./n8n.sh logs n8n          # Show n8n logs only
-./n8n.sh logs redis        # Show Redis logs only
-```
-
-### 🔒 **Security & Credentials**
-```bash
-./n8n.sh generate-secrets   # Generate new secure credentials
-./n8n.sh security-check     # Validate security configuration
-```
-
-### 💾 **Backup & Restore**
-```bash
-./n8n.sh backup             # Create timestamped backup
-./n8n.sh restore backup.tar.gz  # Restore from backup file
-```
-
-### 🔄 **Updates & Maintenance**
-```bash
-./n8n.sh update             # Update n8n (with automatic backup)
-./n8n.sh cleanup            # Remove all containers and data (DESTRUCTIVE)
-```
-
-### ❓ **Help**
-```bash
-./n8n.sh help               # Show detailed help and examples
-```
+| Command | Description |
+|---------|-------------|
+| `./n8n.sh start` | Start n8n (auto-configures if needed) |
+| `./n8n.sh stop` | Stop all services |
+| `./n8n.sh restart` | Restart services |
+| `./n8n.sh status` | Show service health and status |
+| `./n8n.sh logs [service]` | View logs (all or specific service) |
+| `./n8n.sh backup` | Create timestamped backup |
+| `./n8n.sh restore <file>` | Restore from backup |
+| `./n8n.sh update` | Update to latest version (with backup) |
+| `./n8n.sh generate-secrets` | Generate new secure credentials |
+| `./n8n.sh security-check` | Validate security configuration |
+| `./n8n.sh help` | Show detailed help |
 
 ## 🗂️ Project Structure
 
 ```
 n8n-docker-setup/
-├── n8n.sh                 # Main management script (handles everything!)
-├── docker-compose.yml     # Docker Compose configuration
-├── .env                   # Your environment config (auto-generated)
-├── .env.template          # Production-ready template with secure placeholders
-├── .gitignore             # Git ignore with security protections
-├── README.md              # This documentation
-├── data/                  # Persistent data (excluded from git)
-│   ├── n8n/              # n8n workflows and data
-│   ├── redis/            # Redis data (if using queue mode)
-│   └── postgres/         # PostgreSQL data (if using postgres)
-├── backups/              # Backup files (excluded from git)
-└── logs/                 # Application logs (excluded from git)
+├── n8n.sh                 # 🎯 Main management script
+├── docker-compose.yml     # 🐳 Container orchestration  
+├── .env.template          # 📋 Configuration template
+├── .env                   # 🔒 Your secrets (auto-generated)
+├── data/                  # 💾 Persistent data
+│   ├── n8n/              # n8n workflows and database
+│   ├── redis/            # Redis data (if queue mode)
+│   └── postgres/         # PostgreSQL data (if enabled)
+├── backups/              # 🗄️ Backup files
+├── logs/                 # 📊 Application logs  
+└── wiki/                 # 📚 Comprehensive documentation
 ```
 
 ## 🔧 Configuration
 
-### Environment Variables
+### Default Setup (Zero Config)
+- **Database**: SQLite (perfect for most use cases)
+- **Port**: 5678 (configurable)
+- **Auth**: Disabled (use n8n's built-in user management)
+- **Timezone**: UTC (configurable)
+- **Logging**: Info level
 
-The setup uses environment files for configuration. Key variables:
+### Production Scaling
+For high-traffic environments, easily switch to:
+- **PostgreSQL** database
+- **Redis** queue mode  
+- **Multiple workers**
+- **HTTPS** with reverse proxy
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `N8N_HOST` | Host for n8n | `0.0.0.0` |
-| `N8N_PORT` | Port for n8n | `5678` |
-| `N8N_BASIC_AUTH_PASSWORD` | Admin password | Auto-generated |
-| `N8N_ENCRYPTION_KEY` | Data encryption key | Auto-generated |
-| `DB_TYPE` | Database type | `sqlite` |
-| `TZ` | Timezone | `Asia/Kolkata` |
+> 📖 **Detailed configuration guide:** [wiki/Configuration.md](wiki/Configuration.md)
 
-### Configuration
+## 🛡️ Security
 
-The setup uses a single `.env` file that's automatically created with secure defaults:
-
-- **`.env.example`** - Template showing all available options
-- **`.env`** - Your actual configuration (auto-generated during setup)
-
-### Custom Configuration
-
-To customize your setup:
-
-1. Edit the `.env` file directly with your settings (all scripts read from this file)
-2. Or regenerate with new secrets: `./n8n.sh generate-secrets`
-3. Restart services: `./n8n.sh restart`
-
-**The setup is fully environment-driven** - all scripts and docker-compose read configurations from `.env`, with no hardcoded values.
-
-## 🗄️ Database Options
-
-### SQLite (Default)
-- ✅ Perfect for development and small deployments
-- ✅ Zero configuration required
-- ✅ Automatic backups included
-- ❌ Not suitable for high-traffic production
-
-### PostgreSQL (Recommended for Production)
-```bash
-# 1. Edit .env and change database settings:
-# DB_TYPE=postgresdb
-# DB_POSTGRESDB_PASSWORD=your_secure_password
-
-# 2. Uncomment postgres service in docker-compose.yml
-
-# 3. Start services
-./n8n.sh start
-```
-
-## 🔒 Security Features
-
-### Automatic Security
-- 🔐 **Auto-generated passwords** (16-32 characters)
-- 🔑 **Encryption keys** using cryptographically secure methods
-- 🛡️ **File permissions** protection (600 for .env files)
-- 🚫 **Git protection** prevents accidental secret commits
+### Auto-Generated Security
+- **Encryption Keys**: 32-character base64 keys using cryptographically secure methods
+- **Passwords**: 16-20 character random passwords with high entropy
+- **JWT Secrets**: Secure session management tokens
+- **File Permissions**: Automatic 600 permissions on sensitive files
 
 ### Security Best Practices
+- Secrets never stored in git
+- Environment isolation
+- Regular security validation
+- Audit trail in logs
+
+### Security Validation
 ```bash
-# Regular security validation
 ./n8n.sh security-check
-
-# Generate new secrets (rotate every 90 days)
-./n8n.sh generate-secrets
-
-# Create regular backups
-./n8n.sh backup
 ```
 
-### Production Security Checklist
-- [ ] Use PostgreSQL database
-- [ ] Enable HTTPS with SSL certificates
-- [ ] Set up firewall rules
-- [ ] Use strong, unique passwords
-- [ ] Enable regular backups
-- [ ] Monitor access logs
-- [ ] Keep n8n updated
-
-## 💾 Backup & Restore
+## 💾 Backup & Recovery
 
 ### Automatic Backups
-Backups include:
-- All n8n workflow data
-- Database contents
-- Configuration files
-- Custom nodes (if any)
+- **Schedule**: Daily at 2 AM (configurable)
+- **Retention**: 30 days (configurable)  
+- **Contents**: Workflows, database, configuration, custom nodes
 
-### Manual Backup
+### Manual Operations
 ```bash
 # Create backup
 ./n8n.sh backup
-# Creates: backups/n8n_backup_YYYYMMDD_HHMMSS.tar.gz
-```
 
-### Restore Process
-```bash
-# List available backups
-ls -la backups/
-
-# Restore from specific backup
+# Restore from backup  
 ./n8n.sh restore n8n_backup_20240315_120000.tar.gz
-```
 
-## 🔄 Updates & Migration
-
-### Safe Updates
-```bash
-# Update with automatic backup and rollback on failure
+# Safe updates with auto-backup
 ./n8n.sh update
 ```
 
-The update process:
+## 🔄 Updates & Maintenance
+
+### Safe Update Process
+```bash
+./n8n.sh update
+```
 1. Creates automatic backup
-2. Pulls latest n8n image
-3. Restarts services
-4. Verifies health
-5. Shows success/failure status
+2. Pulls latest n8n version
+3. Restarts with new version
+4. Verifies successful update
+5. Rollback available if issues occur
 
-### Migration Between Environments
+### Maintenance Tasks
+- **Security Checks**: `./n8n.sh security-check`
+- **Health Monitoring**: `./n8n.sh status`  
+- **Log Analysis**: `./n8n.sh logs`
+- **Credential Rotation**: `./n8n.sh generate-secrets`
 
-1. **Create backup** on source system:
-   ```bash
-   ./n8n.sh backup
-   ```
+## 🚦 System Requirements
 
-2. **Transfer files** to new system:
-   ```bash
-   # Copy the entire project directory
-   scp -r n8n-docker-setup user@newserver:/path/to/destination
-   ```
+### Minimum Requirements
+- **Docker**: 20.10+ with Docker Compose
+- **Memory**: 1GB RAM (2GB+ recommended)
+- **Storage**: 2GB free disk space
+- **OS**: Linux, macOS, or Windows with WSL2
 
-3. **Restore on target** system:
-   ```bash
-   cd /path/to/destination/n8n-docker-setup
-   ./n8n.sh restore n8n_backup_YYYYMMDD_HHMMSS.tar.gz
-   ```
+### Recommended for Production
+- **Memory**: 4GB+ RAM
+- **Storage**: SSD with 10GB+ free space
+- **CPU**: 2+ cores
+- **Network**: Stable internet for updates
 
-## 🐛 Troubleshooting
+## 🆘 Quick Troubleshooting
 
-### Common Issues
+| Issue | Solution |
+|-------|----------|
+| Port 5678 in use | Change `N8N_PORT` in `.env` |
+| Permission errors | `sudo chown -R $USER:$USER data/` |
+| Container won't start | Check `./n8n.sh logs` for errors |
+| Can't access web UI | Verify Docker is running: `docker info` |
+| Need to reset everything | `./n8n.sh cleanup` (⚠️ deletes all data) |
 
-**Port already in use:**
-```bash
-# Change port in .env file
-N8N_PORT=5679
-./n8n.sh restart
-```
+## 📚 Documentation
 
-**Permission errors:**
-```bash
-# Fix data directory permissions
-sudo chown -R $USER:$USER data/
-chmod 755 data/
-```
+### 📖 Comprehensive Wiki
+- **[🏠 Wiki Home](wiki/Home.md)** - Documentation hub
+- **[🚀 Quick Start](wiki/Quick-Start.md)** - 60-second deployment  
+- **[⚙️ Configuration](wiki/Configuration.md)** - Environment settings
+- **[📋 Command Reference](wiki/Command-Reference.md)** - All commands explained
+- **[❓ FAQ](wiki/FAQ.md)** - Common questions answered
+- **[🔒 Security Guide](wiki/Security.md)** - Hardening & best practices
+- **[🏭 Production Deployment](wiki/Production-Deployment.md)** - Enterprise setup
 
-**Database connection issues:**
-```bash
-# Check logs
-./n8n.sh logs
-
-# Reset database (CAUTION: destroys data)
-./n8n.sh stop
-rm -rf data/n8n/database.sqlite
-./n8n.sh start
-```
-
-**Services won't start:**
-```bash
-# Check Docker status
-docker info
-
-# Check service status
-./n8n.sh status
-
-# View detailed logs
-./n8n.sh logs
-```
-
-### Getting Help
-
-1. **Check logs**: `./n8n.sh logs`
-2. **Validate security**: `./n8n.sh security-check`
-3. **Check service health**: `./n8n.sh status`
-4. **View help**: `./n8n.sh help`
-
-## 🔗 Access Information
-
-After successful deployment:
-
-- **Web Interface**: http://0.0.0.0:5678
-- **Username**: admin
-- **Password**: Shown during setup (also in logs)
-- **API Endpoint**: http://0.0.0.0:5678/api
-- **Webhook URL**: http://0.0.0.0:5678/webhook
+### External Resources
+- **[n8n Documentation](https://docs.n8n.io/)** - Official n8n docs
+- **[Community Forum](https://community.n8n.io/)** - Get help from the community
+- **[Docker Documentation](https://docs.docker.com/)** - Docker reference
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create your feature branch
-3. Test thoroughly in development environment
-4. Submit a pull request
+Contributions are welcome! Please read our [Contributing Guide](wiki/Contributing.md) for details on:
+- Code standards
+- Testing requirements  
+- Pull request process
+- Security considerations
 
 ## 📄 License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🔗 Resources
+## 🔗 Links
 
-- [n8n Official Documentation](https://docs.n8n.io/)
-- [n8n Community Forum](https://community.n8n.io/)
-- [Docker Documentation](https://docs.docker.com/)
-- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- **[n8n Official Website](https://n8n.io)**
+- **[Docker Hub - n8n](https://hub.docker.com/r/n8nio/n8n)**
+- **[GitHub - n8n](https://github.com/n8n-io/n8n)**
 
 ---
 
-**⚡ Quick Start Reminder:**
-```bash
-./n8n.sh setup && ./n8n.sh start
-```
+<div align="center">
 
-**🔒 Security First:**
-- Never commit `.env` files
-- Regularly rotate secrets
-- Use HTTPS in production
-- Keep backups secure
+**⭐ If this project helped you, please give it a star!**
 
-**📞 Need Help?** Run `./n8n.sh help` for detailed command information.
+**🚀 Deploy n8n in seconds • 🛡️ Enterprise security • 📦 Production ready**
+
+</div>
