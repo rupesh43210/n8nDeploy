@@ -1,0 +1,104 @@
+# Docker Compose configuration for n8n
+
+services:
+  n8n:
+    image: n8nio/n8n:1.65.1
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      - TZ=${TZ:-UTC}
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - N8N_PATH=/
+      - N8N_EDITOR_BASE_URL=${N8N_PROTOCOL:-http}://${N8N_HOST:-localhost}:${N8N_PORT:-5678}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - VUE_APP_URL_BASE_API=${N8N_PROTOCOL:-http}://${N8N_HOST:-localhost}:${N8N_PORT:-5678}
+      - GENERIC_TIMEZONE=${TZ:-UTC}
+      - DB_TYPE=${DB_TYPE:-sqlite}
+      - DB_SQLITE_VACUUM_ON_STARTUP=true
+      - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST}
+      - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT}
+      - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
+      - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
+      - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - NODE_ENV=production
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - EXECUTIONS_MODE=${EXECUTIONS_MODE:-regular}
+      # Redis configuration (only for queue mode)
+      # - REDIS_HOST=${REDIS_HOST:-redis}
+      # - REDIS_PORT=${REDIS_PORT:-6379}
+      # - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+    volumes:
+      - ${N8N_DATA_PATH:-./data/n8n}:/home/node/.n8n
+    # depends_on:
+    #   - redis  # Only needed for queue mode
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:5678/healthz || exit 1"]
+      interval: ${HEALTHCHECK_INTERVAL:-30s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-10s}
+      retries: ${HEALTHCHECK_RETRIES:-3}
+      start_period: 60s
+    networks:
+      - n8n-network
+
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${REDIS_PORT:-6379}:6379"
+  #   command: >
+  #     sh -c '
+  #       if [ -n "$REDIS_PASSWORD" ]; then
+  #         redis-server --requirepass "$REDIS_PASSWORD"
+  #       else
+  #         redis-server
+  #       fi
+  #     '
+  #   environment:
+  #     - REDIS_PASSWORD=${REDIS_PASSWORD}
+  #   volumes:
+  #     - ${REDIS_DATA_PATH:-./data/redis}:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - n8n-network
+
+  # Uncomment for PostgreSQL support
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: n8n-postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}
+  #     - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}
+  #     - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+  #   volumes:
+  #     - ${POSTGRES_DATA_PATH:-./data/postgres}:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DB_POSTGRESDB_USER:-n8n}"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - n8n-network
+
+networks:
+  n8n-network:
+    driver: bridge
+
+volumes:
+  n8n_data:
+  redis_data:
+  postgres_data:

@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(make:*)",
+      "Bash(docker-compose:*)",
+      "Bash(curl:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker logs:*)",
+      "Bash(cp:*)",
+      "Bash(./security-check.sh)",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(./n8n.sh:*)",
+      "Bash(docker:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(source .env)",
+      "Bash(echo:*)"
+    ],
+    "deny": []
+  }
+}

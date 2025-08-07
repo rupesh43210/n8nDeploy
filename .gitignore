@@ -1,0 +1,96 @@
+# Environment files (NEVER commit these - contain secrets!)
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+.env.*.local
+
+# Docker environment overrides
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.*.yml
+
+# Data directories (persistent data)
+data/
+!data/.gitkeep
+
+# Backup files (may contain sensitive data)
+backups/
+!backups/.gitkeep
+*.tar.gz
+*.zip
+*.sql
+*.dump
+
+# Log files (may contain sensitive information)
+logs/
+*.log
+*.log.*
+
+# SSL certificates and keys
+ssl/
+certs/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Custom nodes (uncomment if you want to track them)
+custom-nodes/
+
+# Docker related
+.docker/
+docker-compose.prod.yml
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+node_modules/
+
+# Git related
+*.patch
+*.diff
+
+# Package managers
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System files
+Thumbs.db
+Desktop.ini
+
+# Runtime files
+*.pid
+*.seed
+*.sock
+
+# Coverage and test results
+coverage/
+.nyc_output/
+test-results/
+
+# Documentation build
+docs/build/
+site/
