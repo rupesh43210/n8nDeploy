@@ -37,15 +37,17 @@ services:
       - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE:-false}
       - N8N_COOKIE_SAME_SITE=${N8N_COOKIE_SAME_SITE:-lax}
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS:-true}
-      # Redis configuration (only for queue mode)
-      # - REDIS_HOST=${REDIS_HOST:-redis}
-      # - REDIS_PORT=${REDIS_PORT:-6379}
-      # - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # Redis configuration
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB:-0}
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
     volumes:
       - ${N8N_DATA_PATH:-./data/n8n}:/home/node/.n8n
-    # depends_on:
-    #   - redis  # Only needed for queue mode
+    depends_on:
+      - postgres
+      - redis
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:5678/healthz || exit 1"]
       interval: ${HEALTHCHECK_INTERVAL:-30s}
@@ -55,50 +57,58 @@ services:
     networks:
       - n8n-network
 
-  # redis:
-  #   image: redis:7-alpine
-  #   container_name: redis
-  #   restart: unless-stopped
-  #   ports:
-  #     - "${REDIS_PORT:-6379}:6379"
-  #   command: >
-  #     sh -c '
-  #       if [ -n "$REDIS_PASSWORD" ]; then
-  #         redis-server --requirepass "$REDIS_PASSWORD"
-  #       else
-  #         redis-server
-  #       fi
-  #     '
-  #   environment:
-  #     - REDIS_PASSWORD=${REDIS_PASSWORD}
-  #   volumes:
-  #     - ${REDIS_DATA_PATH:-./data/redis}:/data
-  #   healthcheck:
-  #     test: ["CMD", "redis-cli", "ping"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #   networks:
-  #     - n8n-network
+  redis:
+    image: redis:7-alpine
+    container_name: n8n-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: >
+      sh -c '
+        if [ -n "$REDIS_PASSWORD" ]; then
+          redis-server --requirepass "$REDIS_PASSWORD"
+        else
+          redis-server
+        fi
+      '
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ${REDIS_DATA_PATH:-./data/redis}:/data
+    healthcheck:
+      test: >
+        sh -c '
+          if [ -n "$REDIS_PASSWORD" ]; then
+            redis-cli -a "$REDIS_PASSWORD" ping
+          else
+            redis-cli ping
+          fi
+        '
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - n8n-network
 
-  # Uncomment for PostgreSQL support
-  # postgres:
-  #   image: postgres:15-alpine
-  #   container_name: n8n-postgres
-  #   restart: unless-stopped
-  #   environment:
-  #     - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}
-  #     - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}
-  #     - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD}
-  #   volumes:
-  #     - ${POSTGRES_DATA_PATH:-./data/postgres}:/var/lib/postgresql/data
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U ${DB_POSTGRESDB_USER:-n8n}"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #   networks:
-  #     - n8n-network
+  postgres:
+    image: postgres:15-alpine
+    container_name: n8n-postgres
+    restart: unless-stopped
+    ports:
+      - "${DB_POSTGRESDB_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}
+      - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}
+      - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+    volumes:
+      - ${POSTGRES_DATA_PATH:-./data/postgres}:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_POSTGRESDB_USER:-n8n}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - n8n-network
 
 networks:
   n8n-network:
