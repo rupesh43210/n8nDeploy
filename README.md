@@ -97,7 +97,7 @@ n8n-docker-setup/
 ├── n8n.sh                 # Main management script (handles everything!)
 ├── docker-compose.yml     # Docker Compose configuration
 ├── .env                   # Your environment config (auto-generated)
-├── .env.example           # Template for manual setup
+├── .env.template          # Production-ready template with secure placeholders
 ├── .gitignore             # Git ignore with security protections
 ├── README.md              # This documentation
 ├── data/                  # Persistent data (excluded from git)

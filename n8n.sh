@@ -161,14 +161,11 @@ create_env_file() {
     DB_PASSWORD=$(generate_password 20)
     REDIS_PASSWORD=$(generate_password 16)
     
-    # Determine which template to use
-    local template_file=""
-    if [ -f ".env.template" ]; then
-        template_file=".env.template"
-    elif [ -f ".env.example" ]; then
-        template_file=".env.example"
-    else
-        print_error "No template file found (.env.template or .env.example)!"
+    # Use .env.template for configuration
+    local template_file=".env.template"
+    if [ ! -f "$template_file" ]; then
+        print_error "Template file $template_file not found!"
+        print_status "Please ensure .env.template exists in the project directory"
         exit 1
     fi
     

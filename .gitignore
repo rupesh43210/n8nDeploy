@@ -9,7 +9,7 @@
 .env.tmp*
 
 # Template file with placeholders is safe to commit
-# .env.template
+# .env.template is tracked - contains no secrets, only placeholders
 
 #------------
 .claude/
