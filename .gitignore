@@ -5,6 +5,16 @@
 .env.staging
 .env.development
 .env.*.local
+.env.backup*
+.env.tmp*
+
+# Template file with placeholders is safe to commit
+# .env.template
+
+#------------
+.claude/
+.claude
+settings.local.json
 
 # Docker environment overrides
 docker-compose.override.yml

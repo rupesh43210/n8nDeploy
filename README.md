@@ -21,22 +21,31 @@ A production-ready Docker setup for [n8n](https://n8n.io) workflow automation pl
 - At least 2GB free disk space
 - Port 5678 available (or configure different port)
 
-### One-Command Deployment
+### ⚡ Zero-Configuration Deployment
 
 ```bash
-# Clone or download this repository
+# Clone this repository
 git clone <repository-url>
 cd n8n-docker-setup
 
-# Deploy with auto-generated secure credentials
-./n8n.sh setup
+# One command to rule them all!
 ./n8n.sh start
 
-# Access n8n at http://0.0.0.0:5678
-# Username and password will be shown in the setup output
+# That's it! Access n8n at: http://localhost:5678
+# No login required - create your admin account through n8n's setup wizard
 ```
 
-That's it! Your n8n instance is now running securely.
+**What happens automatically:**
+- ✅ `.env` file created with production-ready defaults
+- ✅ Secure credentials auto-generated (encryption keys, passwords)
+- ✅ Docker containers started
+- ✅ n8n running with optimal settings
+- ✅ No manual configuration needed
+
+**First-time setup:**
+- Navigate to http://localhost:5678
+- Create your admin account through n8n's built-in setup wizard
+- No basic authentication required (recommended approach)
 
 ## 📋 Available Commands
 

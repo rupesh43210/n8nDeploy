@@ -143,52 +143,81 @@ safe_env_replace() {
     mv "$temp_file" "$file"
 }
 
-# Function to setup environment
+# Function to ensure .env file exists with secure defaults
+ensure_env_file() {
+    if [ ! -f "$ENV_FILE" ]; then
+        print_status "Creating environment file with production-ready defaults..."
+        create_env_file
+    fi
+}
+
+# Function to create .env file from template
+create_env_file() {
+    # Generate secure credentials
+    ADMIN_PASSWORD=$(generate_password 16)
+    ENCRYPTION_KEY=$(generate_encryption_key 32)
+    JWT_SECRET=$(generate_encryption_key 32)
+    WEBHOOK_TOKEN=$(generate_encryption_key 24)
+    DB_PASSWORD=$(generate_password 20)
+    REDIS_PASSWORD=$(generate_password 16)
+    
+    # Determine which template to use
+    local template_file=""
+    if [ -f ".env.template" ]; then
+        template_file=".env.template"
+    elif [ -f ".env.example" ]; then
+        template_file=".env.example"
+    else
+        print_error "No template file found (.env.template or .env.example)!"
+        exit 1
+    fi
+    
+    # Create .env file from template with timestamp
+    {
+        echo "# Generated on $(date) by n8n.sh"
+        echo "# Production-ready configuration with secure auto-generated credentials"
+        echo ""
+        cat "$template_file"
+    } > "$ENV_FILE"
+    
+    # Replace placeholders with generated values using sed
+    sed -i.tmp "s/__ADMIN_PASSWORD__/$ADMIN_PASSWORD/g" "$ENV_FILE"
+    sed -i.tmp "s|__ENCRYPTION_KEY__|$ENCRYPTION_KEY|g" "$ENV_FILE"
+    sed -i.tmp "s|__JWT_SECRET__|$JWT_SECRET|g" "$ENV_FILE"
+    sed -i.tmp "s|__WEBHOOK_TOKEN__|$WEBHOOK_TOKEN|g" "$ENV_FILE"
+    sed -i.tmp "s/__DB_PASSWORD__/$DB_PASSWORD/g" "$ENV_FILE"
+    sed -i.tmp "s/__REDIS_PASSWORD__/$REDIS_PASSWORD/g" "$ENV_FILE"
+    
+    # Remove backup files
+    rm -f "$ENV_FILE.tmp"
+    
+    # Set secure permissions
+    chmod 600 "$ENV_FILE"
+    
+    print_success "Environment file created with secure auto-generated credentials"
+    print_status "Basic authentication is DISABLED by default for first-time setup"
+    print_status "Configure user accounts through n8n's web interface at http://localhost:5678"
+    print_warning "Credentials are available in .env file if needed for advanced configuration"
+}
+
+# Function to setup environment (enhanced)
 setup_environment() {
     print_header "=== Setting Up Environment ==="
     
-    # Create data directories
+    # Create data directories with proper permissions
     mkdir -p data/{n8n,redis,postgres} backups logs
+    chmod 755 data backups logs
     
+    # Ensure .env file exists
     if [ ! -f "$ENV_FILE" ]; then
-        print_status "Creating environment file..."
-        
-        # Generate secure credentials
-        ADMIN_PASSWORD=$(generate_password 16)
-        ENCRYPTION_KEY=$(generate_encryption_key 32)
-        JWT_SECRET=$(generate_encryption_key 32)
-        WEBHOOK_TOKEN=$(generate_encryption_key 24)
-        
-        # Create .env file from template
-        if [ -f ".env.example" ]; then
-            # Copy template and add timestamp
-            {
-                echo "# Generated on $(date)"
-                cat ".env.example"
-            } > "$ENV_FILE"
-        else
-            print_error ".env.example template not found!"
-            print_status "Please ensure .env.example exists in the project directory"
-            exit 1
-        fi
-        
-        # Apply generated secrets to the .env file safely
-        safe_env_replace "N8N_BASIC_AUTH_PASSWORD" "$ADMIN_PASSWORD" "$ENV_FILE"
-        safe_env_replace "N8N_ENCRYPTION_KEY" "$ENCRYPTION_KEY" "$ENV_FILE"
-        safe_env_replace "N8N_JWT_SECRET" "$JWT_SECRET" "$ENV_FILE"
-        safe_env_replace "N8N_WEBHOOK_TOKEN" "$WEBHOOK_TOKEN" "$ENV_FILE"
-        
-        chmod 600 "$ENV_FILE"
-        
-        print_success "Environment file created with secure credentials"
-        print_success "Admin password: $ADMIN_PASSWORD"
-        print_warning "Please save this password securely!"
+        create_env_file
     else
         print_status "Environment file already exists"
-        ADMIN_PASSWORD=$(grep "N8N_BASIC_AUTH_PASSWORD=" "$ENV_FILE" | cut -d'=' -f2-)
+        print_status "Run 'generate-secrets' command to regenerate credentials if needed"
     fi
     
     print_success "Environment setup completed"
+    print_success "Ready to start n8n with: ./n8n.sh start"
 }
 
 # Function to start services
@@ -197,10 +226,8 @@ start_services() {
     
     check_dependencies
     
-    if [ ! -f "$ENV_FILE" ]; then
-        print_warning "Environment file not found. Setting up..."
-        setup_environment
-    fi
+    # Auto-create .env file if it doesn't exist
+    ensure_env_file
     
     # Load environment variables
     load_env
@@ -499,8 +526,13 @@ EXAMPLES:
 
 ACCESS:
     After starting, access n8n at: http://\${N8N_HOST:-0.0.0.0}:\${N8N_PORT:-5678}
-    Default username: \${N8N_BASIC_AUTH_USER:-admin}
-    Password is generated during setup and shown in output
+    
+    FIRST-TIME SETUP:
+    - No login required - direct access to n8n interface
+    - Create your admin account through n8n's setup wizard
+    - Basic auth is disabled by default (recommended)
+    
+    ADVANCED: Enable basic auth by setting N8N_BASIC_AUTH_ACTIVE=true in .env
 
 SECURITY:
     - Credentials are auto-generated securely
